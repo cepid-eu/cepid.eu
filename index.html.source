@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Métiers de la Documentation en France (2025) - cepid.eu</title>
+  <meta name="description"
+    content="Visualisation interactive du marché de l'emploi des documentalistes en France en 2025. Données collectées via l'API France Travail.">
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#2563eb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="CEPID Infoviz">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- Cache Busting Version -->
+  <meta name="build-version" content="4242e91">
+
+  <!-- PWA Manifest with cache busting -->
+  <link rel="manifest" href="manifest.json?v=9ebcace">
+
+  <!-- Favicons (from cepid.eu) with cache busting -->
+  <link rel="shortcut icon" href="assets/favicon.ico?v=9ebcace">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png?v=9ebcace">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png?v=9ebcace">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png?v=9ebcace">
+
+  <!-- Preload critical resources for LCP optimization -->
+  <link rel="preload" href="css/style.min.css?v=9ebcace" as="style">
+  <link rel="preload" href="data/aggregated.json?v=9ebcace" as="fetch" crossorigin>
+  <link rel="preload" href="assets/cepid-logo.png?v=9ebcace" as="image">
+
+  <!-- Cache Buster Module (Must load first for versioning) -->
+  <script src="js/cache-buster.js?v=9ebcace"></script>
+
+  <!-- Stylesheets with cache busting (minified) -->
+  <link rel="stylesheet" href="css/style.min.css?v=9ebcace">
+
+  <!-- D3.js (CDN with local fallback) -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>window.d3 || document.write('<script src="js/vendor/d3.v7.min.js"><\/script>')</script>
+  <!-- Chart.js (CDN with local fallback) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>window.Chart || document.write('<script src="js/vendor/chart.min.js"><\/script>')</script>
+</head>
+
+<body class="loading">
+  <!-- Noscript Fallback for JavaScript-disabled browsers -->
+  <noscript>
+    <style>
+      .js-only {
+        display: none !important;
+      }
+
+      .noscript-content {
+        display: block !important;
+      }
+
+      body.loading .main-content {
+        visibility: visible;
+      }
+
+      body.loading .main-content::before {
+        display: none;
+      }
+    </style>
+
+    <div class="noscript-content" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+      <div class="noscript-warning"
+        style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+        <h2 style="color: #92400e; margin: 0 0 10px 0;">JavaScript désactivé</h2>
+        <p style="margin: 0 0 10px 0;">Pour une expérience interactive complète (graphiques, filtres, carte), veuillez
+          activer JavaScript dans votre navigateur.</p>
+        <p style="margin: 0;">Voici les données sous forme de tableau :</p>
+      </div>
+
+      <table class="data-table" role="grid" aria-label="Offres d'emploi"
+        style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden;">
+        <thead>
+          <tr style="background: #f1f5f9;">
+            <th scope="col"
+              style="padding: 12px 16px; text-align: left; font-weight: 600; color: #64748b; text-transform: uppercase; font-size: 12px;">
+              Titre</th>
+            <th scope="col"
+              style="padding: 12px 16px; text-align: left; font-weight: 600; color: #64748b; text-transform: uppercase; font-size: 12px;">
+              Famille</th>
+            <th scope="col"
+              style="padding: 12px 16px; text-align: left; font-weight: 600; color: #64748b; text-transform: uppercase; font-size: 12px;">
+              Contrat</th>
+            <th scope="col"
+              style="padding: 12px 16px; text-align: left; font-weight: 600; color: #64748b; text-transform: uppercase; font-size: 12px;">
+              Lieu</th>
+            <th scope="col"
+              style="padding: 12px 16px; text-align: left; font-weight: 600; color: #64748b; text-transform: uppercase; font-size: 12px;">
+              Salaire</th>
+            <th scope="col"
+              style="padding: 12px 16px; text-align: left; font-weight: 600; color: #64748b; text-transform: uppercase; font-size: 12px;">
+              Date</th>
+          </tr>
+        </thead>
+        <tbody id="noscript-table-body">
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Documentaliste (H/F)</td>
+            <td style="padding: 12px 16px;">Assistant(e)</td>
+            <td style="padding: 12px 16px;">Intérim - 2 Mois</td>
+            <td style="padding: 12px 16px;">Rhône</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Documentaliste H/f</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Paris</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Responsable des archives communales et de la documentation (H/F)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">CDD - 12 Mois</td>
+            <td style="padding: 12px 16px;">Val-de-Marne</td>
+            <td style="padding: 12px 16px;">3 167 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire en documentation (H/F)</td>
+            <td style="padding: 12px 16px;">Médiathécaire/Bibliothécaire</td>
+            <td style="padding: 12px 16px;">CDD - 12 Mois</td>
+            <td style="padding: 12px 16px;">Rhône</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Documentaliste (H/F)</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Paris</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">ASSISTANT (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">Intérim - 3 Mois</td>
+            <td style="padding: 12px 16px;">Seine-et-Marne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Chargé de documentation (H/F)</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">Intérim - 18 Mois</td>
+            <td style="padding: 12px 16px;">Seine-et-Marne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Documentaliste (H/F)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">Intérim - 6 Mois</td>
+            <td style="padding: 12px 16px;">Var</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">GESTIONNAIRE DE DOCUMENTATION SECTEUR NAVAL (H/F)</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">Intérim - 5 Mois</td>
+            <td style="padding: 12px 16px;">Finistère</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Documentaliste (H/F)</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">Intérim - 5 Mois</td>
+            <td style="padding: 12px 16px;">Finistère</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Responsable adjoint médiathèque et MFS H/F</td>
+            <td style="padding: 12px 16px;">Médiathécaire/Bibliothécaire</td>
+            <td style="padding: 12px 16px;">CDD - 12 Mois</td>
+            <td style="padding: 12px 16px;">Lot</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire Crédits Documentaires (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Yvelines</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">conservateur cimetière, cimetier H/F - EC20795</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Hauts-de-Seine</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Ingénieur(e) Facteurs Organisationnels et Humains (F/H) (CDI) (H/F)</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Coordinateur mécanique (H/F) (CDI)</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Côte-d&#39;Or</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Ingénieur Facteurs Organisationnels et Humains débutant F/H (CDI) (H/F)</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Gard</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Ingénieur Facteurs Organisationnel et Humain F/H (CDI) (H/F)</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Manche</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire de dossiers H/F</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">ASSISTANT (H/F)</td>
+            <td style="padding: 12px 16px;">Assistant(e)</td>
+            <td style="padding: 12px 16px;">Intérim - 4 Mois</td>
+            <td style="padding: 12px 16px;">Charente-Maritime</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">ASSISTANT (H/F)</td>
+            <td style="padding: 12px 16px;">Assistant(e)</td>
+            <td style="padding: 12px 16px;">Intérim - 6 Mois</td>
+            <td style="padding: 12px 16px;">Cher</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Animateur en centre de ressources (H/F)</td>
+            <td style="padding: 12px 16px;">Responsable</td>
+            <td style="padding: 12px 16px;">CDD - 12 Mois</td>
+            <td style="padding: 12px 16px;">Haute-Garonne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">CHARGE(E) DE MISSION SCIENTIFIQUE (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDD - 12 Mois</td>
+            <td style="padding: 12px 16px;">Rhône</td>
+            <td style="padding: 12px 16px;">3 083 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Spécialiste en documentation technique - pales hélicoptères (f/h)</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Paris</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Charge de documentation technique h/f</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">Intérim - 18 Mois</td>
+            <td style="padding: 12px 16px;">Seine-et-Marne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">CHARGE DE DOCUMENTATION TECHNIQUE H/F</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">Intérim - 18 Mois</td>
+            <td style="padding: 12px 16px;">Seine-et-Marne</td>
+            <td style="padding: 12px 16px;">3 050 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire de dossier H/F</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Yvelines</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire de documentation F/H (CDI) (H/F)</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Haute-Vienne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire de dossier H/F</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Essonne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">archiviste H/F - EC22313</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Seine-Saint-Denis</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Assistant documentaliste (H/F)</td>
+            <td style="padding: 12px 16px;">Assistant(e)</td>
+            <td style="padding: 12px 16px;">CDD - 6 Mois</td>
+            <td style="padding: 12px 16px;">Ain</td>
+            <td style="padding: 12px 16px;">1 901 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Chef / Cheffe de projet &quot;Archives&quot; (H/F)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">CDD - 12 Mois</td>
+            <td style="padding: 12px 16px;">Aisne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">CHARGÉ D&#39;ÉTUDES CFO (H/F)</td>
+            <td style="padding: 12px 16px;">Responsable</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Alpes-Maritimes</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Directeur / Directrice de médiathèque (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDD - 12 Mois</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">#etr18 rotorcraft cyber security architect (f/m) (h/f)</td>
+            <td style="padding: 12px 16px;">Responsable</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Documentaliste (h/f)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">Intérim - 18 Mois</td>
+            <td style="padding: 12px 16px;">Eure</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire de dossiers H/F</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Hérault</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Un.e Responsable de Médiathèque (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Loiret</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Super U - Chargé / Chargée des ressources documentaires (H/F)</td>
+            <td style="padding: 12px 16px;">Directeur/Directrice</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Maine-et-Loire</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire entreprise (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Nord</td>
+            <td style="padding: 12px 16px;">2 667 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Chargé d&#39;études électrotechnique (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Rhône</td>
+            <td style="padding: 12px 16px;">3 208 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Cyber defence specialist - vulnerability (h/f)</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Paris</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Un.e animateur.trice ludothécaire (H/F)</td>
+            <td style="padding: 12px 16px;">Responsable</td>
+            <td style="padding: 12px 16px;">CDD - 12 Mois</td>
+            <td style="padding: 12px 16px;">Seine-Maritime</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">ASSISTANT (H/F)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">Intérim - 3 Mois</td>
+            <td style="padding: 12px 16px;">Seine-et-Marne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire de dossiers H/F</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Somme</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Responsable de la cellule de documentation (H/F)</td>
+            <td style="padding: 12px 16px;">Responsable</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Var</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Responsable du service documentation (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Vendée</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Technicien documentation aéronautique h/f</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">Intérim - 3 Mois</td>
+            <td style="padding: 12px 16px;">Vienne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire de documentation F/H (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Haute-Vienne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">PROFESSEUR (E) DE PHYSIQUES CHIMIE au collège et lycée (H/F)</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDD - 4 Mois</td>
+            <td style="padding: 12px 16px;">Hauts-de-Seine</td>
+            <td style="padding: 12px 16px;">1 245 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Assistant de projet et gestion documentaire (h/f)</td>
+            <td style="padding: 12px 16px;">Responsable</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Hauts-de-Seine</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Doc Controller (H/F)</td>
+            <td style="padding: 12px 16px;">Document Controller</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Seine-Saint-Denis</td>
+            <td style="padding: 12px 16px;">3 208 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Directeur / Directrice de crèche - H/F</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Val-d&#39;Oise</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">CHARGÉ D&#39;ÉTUDES CFO (F/H) (H/F)</td>
+            <td style="padding: 12px 16px;">Responsable</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Alpes-Maritimes</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Chargé de documentation (H/F)</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">Intérim - 4 Mois</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">1 958 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Documentaliste Technique Nucléaire (H/F)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">2 500 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">ASSISTANT (H/F)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">Intérim - 2 Mois</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Documentaliste (h/f)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">Intérim - 18 Mois</td>
+            <td style="padding: 12px 16px;">Eure</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire qualité et documentaire (H/F)</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">Intérim - 24 Mois</td>
+            <td style="padding: 12px 16px;">Haute-Corse</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">[ORALYS]Documentaliste support technique H/F</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Indre-et-Loire</td>
+            <td style="padding: 12px 16px;">2 200 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Adjoint.e du patrimoine - Bibliothécaire jeunesse (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Loire-Atlantique</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Ingénieur documentation technique h/f</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">Intérim - 1 Mois</td>
+            <td style="padding: 12px 16px;">Loire-Atlantique</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Responsable service Intégration (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Maine-et-Loire</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Chargé d&#39;études &quot;Archivage&quot; (H/F)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">CDD - 36 Mois</td>
+            <td style="padding: 12px 16px;">Nord</td>
+            <td style="padding: 12px 16px;">3 100 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">INSTRUCTEUR - INSTRUCTRICE ENSEIGNE ET AFFICHAGE PUBLICITAIRE (H/F)</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDD - 12 Mois</td>
+            <td style="padding: 12px 16px;">Bas-Rhin</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Assistant archiviste (H/F)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">CDD - 4 Mois</td>
+            <td style="padding: 12px 16px;">Rhône</td>
+            <td style="padding: 12px 16px;">2 250 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire documentation (h/f)</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">Intérim - 6 Mois</td>
+            <td style="padding: 12px 16px;">Rhône</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Agent de médiathèque / ludothèque (H/F)</td>
+            <td style="padding: 12px 16px;">Médiathécaire/Bibliothécaire</td>
+            <td style="padding: 12px 16px;">CDD - 3 Mois</td>
+            <td style="padding: 12px 16px;">Haute-Savoie</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Document Controller F/H (H/F)</td>
+            <td style="padding: 12px 16px;">Document Controller</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Paris</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Alternance - Responsable de secteur H/F</td>
+            <td style="padding: 12px 16px;">Responsable</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Paris</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Coordinateur Sudoc F/H (réf. 23001) (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDD - 36 Mois</td>
+            <td style="padding: 12px 16px;">Paris</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">RH Généraliste H/F</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Seine-et-Marne</td>
+            <td style="padding: 12px 16px;">4 583 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Documentaliste (H/F)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">Intérim - 3 Mois</td>
+            <td style="padding: 12px 16px;">Seine-et-Marne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire RH (F/H) - STAGE</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">CDD - 6 Mois</td>
+            <td style="padding: 12px 16px;">Deux-Sèvres</td>
+            <td style="padding: 12px 16px;">1 667 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire de documentation f/h</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Haute-Vienne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Responsable médiathèque (H/F)</td>
+            <td style="padding: 12px 16px;">Médiathécaire/Bibliothécaire</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Territoire de Belfort</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Chargé de suivi documentaire (F/H) (H/F)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Essonne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">assistant conservation H/F - EC20937</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Hauts-de-Seine</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">CHARGÉ.E DE LA CARTOGRAPHIE DES COLLECTIONS IMPRIMÉES (H/F)</td>
+            <td style="padding: 12px 16px;">Responsable</td>
+            <td style="padding: 12px 16px;">CDD - 36 Mois</td>
+            <td style="padding: 12px 16px;">Hauts-de-Seine</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">RESPONSABLE DU PÔLE JEUNESSE DE LA LUDO-MÉDIATHÈQUE (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Hauts-de-Seine</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Archiviste-documentaliste (H/F)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Seine-Saint-Denis</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Documentaliste technique H/F</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">CDD - 6 Mois</td>
+            <td style="padding: 12px 16px;">Seine-Saint-Denis</td>
+            <td style="padding: 12px 16px;">2 323 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Manager (H/F)</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Seine-Saint-Denis</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Adjoint du patrimoine - Médiathèque Jean-Jacques-Rousseau (H/F)</td>
+            <td style="padding: 12px 16px;">Veille</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Val-de-Marne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Directeur des ressources humaines indépendant H/F</td>
+            <td style="padding: 12px 16px;">Directeur/Directrice</td>
+            <td style="padding: 12px 16px;">Franchise</td>
+            <td style="padding: 12px 16px;">Ain</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Directeur des ressources humaines indépendant H/F</td>
+            <td style="padding: 12px 16px;">Directeur/Directrice</td>
+            <td style="padding: 12px 16px;">Franchise</td>
+            <td style="padding: 12px 16px;">Aisne</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Directeur des ressources humaines indépendant H/F</td>
+            <td style="padding: 12px 16px;">Directeur/Directrice</td>
+            <td style="padding: 12px 16px;">Franchise</td>
+            <td style="padding: 12px 16px;">Allier</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Directeur des ressources humaines indépendant H/F</td>
+            <td style="padding: 12px 16px;">Directeur/Directrice</td>
+            <td style="padding: 12px 16px;">Franchise</td>
+            <td style="padding: 12px 16px;">Ardèche</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Directeur des ressources humaines indépendant H/F</td>
+            <td style="padding: 12px 16px;">Directeur/Directrice</td>
+            <td style="padding: 12px 16px;">Franchise</td>
+            <td style="padding: 12px 16px;">Ardennes</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Directeur des ressources humaines indépendant H/F</td>
+            <td style="padding: 12px 16px;">Directeur/Directrice</td>
+            <td style="padding: 12px 16px;">Franchise</td>
+            <td style="padding: 12px 16px;">Ariège</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Directeur des ressources humaines indépendant H/F</td>
+            <td style="padding: 12px 16px;">Directeur/Directrice</td>
+            <td style="padding: 12px 16px;">Franchise</td>
+            <td style="padding: 12px 16px;">Aube</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Directeur des ressources humaines indépendant H/F</td>
+            <td style="padding: 12px 16px;">Directeur/Directrice</td>
+            <td style="padding: 12px 16px;">Franchise</td>
+            <td style="padding: 12px 16px;">Aude</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Directeur des ressources humaines indépendant H/F</td>
+            <td style="padding: 12px 16px;">Directeur/Directrice</td>
+            <td style="padding: 12px 16px;">Franchise</td>
+            <td style="padding: 12px 16px;">Aveyron</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire opérations export H/F</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">2 333 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire crédits documentaires H/F</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">2 333 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Spécialiste lettres de crédits H/F</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">2 333 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Chargé des opérations documentaires internationales H/F</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">2 333 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Coordinateur lettre de crédits documentaires H/F</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">2 333 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Chargé de crédits documentaires H/F</td>
+            <td style="padding: 12px 16px;">Documentaliste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">2 333 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">Gestionnaire crédits documentaires H/F</td>
+            <td style="padding: 12px 16px;">Gestionnaire</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">2 333 €/mois</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 12px 16px;">ASSISTANT (F/H) (H/F)</td>
+            <td style="padding: 12px 16px;">Archiviste</td>
+            <td style="padding: 12px 16px;">CDI</td>
+            <td style="padding: 12px 16px;">Bouches-du-Rhône</td>
+            <td style="padding: 12px 16px;">-</td>
+            <td style="padding: 12px 16px;">21/12/2025</td>
+          </tr>
+          <tr>
+            <td colspan="6" style="padding: 20px; text-align: center; color: #64748b; font-size: 14px;">
+              <p style="margin: 0 0 10px 0;">Affichage des 100 offres les plus récentes sur 4215 au total.</p>
+              <a href="data/aggregated.json" style="color: #2563eb; text-decoration: underline;">Télécharger toutes les
+                données (JSON)</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </noscript>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <a href="https://www.cepid.eu" target="_blank" rel="noopener" class="logo-link">
+        <img src="assets/cepid-logo.png" alt="CEPID" class="logo">
+      </a>
+      <div class="header-title">
+        <h1>Métiers de la Documentation en France</h1>
+        <p class="subtitle">Analyse du marché de l'emploi 2025</p>
+      </div>
+      <div class="data-source">
+        <span class="source-label">Source des données</span>
+        <a href="https://www.data.gouv.fr/organizations/france-travail" target="_blank" rel="noopener"
+          class="source-link">
+          API France Travail
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Offline Indicator -->
+  <div class="offline-indicator" id="offline-indicator" hidden>
+    <span class="offline-icon">&#128268;</span>
+    <span>Mode hors-ligne</span>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs" id="nav-tabs">
+    <button class="tab-btn active" data-tab="overview">Vue d'ensemble</button>
+    <button class="tab-btn" data-tab="salaries">Salaires</button>
+    <button class="tab-btn" data-tab="map">Carte</button>
+    <button class="tab-btn" data-tab="sectors">Secteurs</button>
+    <button class="tab-btn" data-tab="dossier">Dossier Métiers</button>
+  </nav>
+
+  <!-- Mobile Filter Button (visible only on mobile) -->
+  <button class="mobile-filter-btn" id="mobile-filter-btn" aria-label="Ouvrir les filtres">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"></polygon>
+    </svg>
+    <span>Filtres</span>
+    <span class="filter-badge" id="filter-badge" hidden>0</span>
+  </button>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Stats Summary (Top Bar) -->
+    <div class="stats-summary-bar">
+      <div class="stat-item">
+        <span class="stat-value" id="total-offers">-</span>
+        <span class="stat-label">Offres uniques</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" id="offers-with-salary">-</span>
+        <span class="stat-label">Avec salaire</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" id="date-range">-</span>
+        <span class="stat-label">Période</span>
+      </div>
+    </div>
+
+    <!-- Filters Container (Bubbles) -->
+    <div class="filters-container">
+      <h3>Filtres</h3>
+
+      <div class="filter-row">
+        <!-- Department Autocomplete -->
+        <div class="filter-group dept-filter">
+           <label>Département</label>
+           <div class="dept-autocomplete">
+             <div class="dept-chips" id="dept-chips"></div>
+             <div class="dept-input-wrapper">
+               <input type="text" id="dept-search" class="search-input" placeholder="Rechercher..." autocomplete="off">
+               <div class="dept-dropdown" id="dept-dropdown" role="listbox" hidden></div>
+             </div>
+           </div>
+        </div>
+
+        <!-- Job Family Filter -->
+        <div class="filter-group">
+          <label>Famille de métier</label>
+          <div class="multi-select-container" id="filter-job-family-container">
+            <div class="filter-chips" id="filter-job-family-chips"></div>
+            <div class="filter-dropdown-wrapper">
+              <button class="filter-dropdown-trigger" id="filter-job-family-trigger" aria-haspopup="listbox" aria-expanded="false">
+                Sélectionner...
+              </button>
+              <div class="filter-dropdown-menu" id="filter-job-family-dropdown" role="listbox">
+                <!-- Populated by JS -->
+                <div class="skeleton-placeholder"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contract Type Filter -->
+        <div class="filter-group">
+          <label>Type de contrat</label>
+          <div class="multi-select-container" id="filter-contract-container">
+            <div class="filter-chips" id="filter-contract-chips"></div>
+            <div class="filter-dropdown-wrapper">
+              <button class="filter-dropdown-trigger" id="filter-contract-trigger" aria-haspopup="listbox" aria-expanded="false">
+                Sélectionner...
+              </button>
+              <div class="filter-dropdown-menu" id="filter-contract-dropdown" role="listbox">
+                 <!-- Populated by JS -->
+                 <div class="skeleton-placeholder"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reset Filters -->
+      <div class="filter-actions">
+        <button class="btn btn-secondary btn-sm" id="reset-filters">Réinitialiser les filtres</button>
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content-area">
+      <!-- Overview Tab -->
+      <section class="tab-content active" id="tab-overview">
+        <h2>Vue d'ensemble</h2>
+
+        <!-- Key Metrics Cards -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon">📊</div>
+            <div class="metric-value" id="metric-total">-</div>
+            <div class="metric-label">Offres analysées</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon">💼</div>
+            <div class="metric-value" id="metric-families">12</div>
+            <div class="metric-label">Familles de métiers</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon">🏢</div>
+            <div class="metric-value" id="metric-sectors">-</div>
+            <div class="metric-label">Secteurs d'activité</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon">📍</div>
+            <div class="metric-value" id="metric-depts">-</div>
+            <div class="metric-label">Départements</div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-row">
+          <div class="chart-card">
+            <h3>Répartition par famille de métier</h3>
+            <canvas id="chart-job-families"></canvas>
+            <button class="btn btn-cta" data-context="all">Découvrir la typologie de ces offres (passées)</button>
+          </div>
+          <div class="chart-card">
+            <h3>Types de contrat</h3>
+            <canvas id="chart-contracts"></canvas>
+            <button class="btn btn-cta" data-context="all">Découvrir la typologie de ces offres (passées)</button>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="chart-card full-width">
+          <h3>Évolution temporelle des offres</h3>
+          <canvas id="chart-timeline"></canvas>
+        </div>
+      </section>
+
+      <!-- Salaries Tab -->
+      <section class="tab-content" id="tab-salaries">
+        <h2>Distribution des salaires</h2>
+
+        <!-- Salary Toggle -->
+        <div class="salary-toggles">
+          <div class="toggle-group">
+            <label>Affichage:</label>
+            <button class="toggle-btn active" data-salary-type="gross">Brut</button>
+            <button class="toggle-btn" data-salary-type="net">Net</button>
+          </div>
+          <div class="toggle-group">
+            <label>Période:</label>
+            <button class="toggle-btn active" data-salary-period="annual">Annuel</button>
+            <button class="toggle-btn" data-salary-period="monthly">Mensuel</button>
+          </div>
+        </div>
+
+        <!-- Salary Charts -->
+        <div class="charts-row">
+          <div class="chart-card">
+            <h3>Par type de contrat</h3>
+            <canvas id="chart-salary-contract"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Par famille de métier</h3>
+            <canvas id="chart-salary-family"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card full-width">
+          <h3>Top 15 départements par salaire médian</h3>
+          <canvas id="chart-salary-dept"></canvas>
+        </div>
+
+        <!-- Salary Summary Table -->
+        <div class="salary-table-container">
+          <h3>Tableau récapitulatif des salaires</h3>
+          <table class="salary-table" id="salary-summary-table">
+            <thead>
+              <tr>
+                <th>Famille de métier</th>
+                <th>Offres</th>
+                <th>Avec salaire</th>
+                <th>Min</th>
+                <th>Médiane</th>
+                <th>Max</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+          <button class="btn btn-cta" data-context="with-salary">Découvrir la typologie de ces offres (passées)</button>
+        </div>
+      </section>
+
+      <!-- Map Tab -->
+      <section class="tab-content" id="tab-map">
+        <h2>Carte de France</h2>
+
+        <!-- Map Controls -->
+        <div class="map-controls">
+          <div class="toggle-group">
+            <label>Colorier par:</label>
+            <button class="toggle-btn active" data-map-color="count">Nombre d'offres</button>
+            <button class="toggle-btn" data-map-color="salary">Salaire médian</button>
+          </div>
+        </div>
+
+        <!-- Map Container -->
+        <div class="map-container">
+          <div id="france-map"></div>
+          <div class="map-legend" id="map-legend">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Department Comparison -->
+        <div class="comparison-panel">
+          <h3>Comparer les départements</h3>
+          <p class="help-text">Cliquez sur les départements pour les ajouter à la comparaison</p>
+          <div class="comparison-cards" id="comparison-cards">
+            <!-- Populated by JS -->
+          </div>
+          <button class="btn btn-cta" data-context="all">Découvrir la typologie de ces offres (passées)</button>
+        </div>
+      </section>
+
+      <!-- Sectors Tab -->
+      <section class="tab-content" id="tab-sectors">
+        <h2>Secteurs d'activité</h2>
+
+        <!-- Treemap -->
+        <div class="chart-card full-width">
+          <h3>Répartition par secteur</h3>
+          <div id="sector-treemap"></div>
+        </div>
+
+        <!-- Sector Details -->
+        <div class="sector-details">
+          <h3>Détail des secteurs</h3>
+          <table class="data-table" id="sector-table">
+            <thead>
+              <tr>
+                <th>Secteur</th>
+                <th>Offres</th>
+                <th>Salaire médian</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+          <button class="btn btn-cta" data-context="all">Découvrir la typologie de ces offres (passées)</button>
+        </div>
+      </section>
+
+      <!-- Dossier Métiers Tab -->
+      <section class="tab-content" id="tab-dossier">
+        <h2>Dossier Métiers</h2>
+        <p class="intro-text">Explorez chaque famille de métier de la documentation avec ses caractéristiques, salaires
+          et employeurs types.</p>
+
+        <!-- Job Family Cards -->
+        <div class="dossier-grid" id="dossier-grid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <a href="https://www.cepid.eu" target="_blank" rel="noopener">
+          <img src="assets/cepid-logo.png" alt="CEPID" class="footer-logo">
+        </a>
+      </div>
+      <div class="footer-info">
+        <p class="data-attribution">
+          <strong>Données:</strong> Collectées via l'<a href="https://www.data.gouv.fr/organizations/france-travail"
+            target="_blank" rel="noopener">API France Travail</a><br>
+          38 relevés effectués entre janvier et décembre 2025
+        </p>
+      </div>
+      <div class="footer-links">
+        <a href="https://www.cepid.eu" target="_blank" rel="noopener">cepid.eu</a>
+        <a href="https://github.com/cepid-eu/cepid-eu.github.io" target="_blank" rel="noopener">Build 9ebcace</a>
+      </div>
+      <div class="footer-copyleft">
+        <span class="copyleft-symbol" title="Gauche d'auteur - Tous torts réservés">&copy;</span> 2025 CEPID
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bottom Sheet for Mobile Filters -->
+  <div class="bottom-sheet-overlay" id="bottom-sheet-overlay" hidden></div>
+  <div class="bottom-sheet" id="bottom-sheet" hidden>
+    <div class="bottom-sheet-header">
+      <div class="bottom-sheet-handle"></div>
+      <h3>Filtres</h3>
+      <button class="bottom-sheet-close" id="bottom-sheet-close" aria-label="Fermer">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="bottom-sheet-content" id="bottom-sheet-content">
+      <!-- Filter content will be cloned from sidebar -->
+    </div>
+    <div class="bottom-sheet-footer">
+      <button class="btn btn-secondary" id="bottom-sheet-reset">Réinitialiser</button>
+      <button class="btn btn-primary" id="bottom-sheet-apply">Appliquer</button>
+    </div>
+  </div>
+
+  <!-- Update Toast -->
+  <div class="update-toast" id="update-toast" hidden>
+    <div class="update-toast-content">
+      <span class="update-toast-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0L14.59 8.41L23 11L14.59 13.59L12 22L9.41 13.59L1 11L9.41 8.41L12 0Z" />
+          <path d="M20 5L21 8L24 9L21 10L20 13L19 10L16 9L19 8L20 5Z" opacity="0.6" />
+          <path d="M4 2L4.75 4.25L7 5L4.75 5.75L4 8L3.25 5.75L1 5L3.25 4.25L4 2Z" opacity="0.4" />
+        </svg>
+      </span>
+      <div class="update-toast-text">
+        <strong>Mise à jour disponible</strong>
+        <span id="update-countdown">Rechargement dans 5s...</span>
+      </div>
+    </div>
+    <button class="update-toast-btn" id="update-reload">Recharger</button>
+    <button class="update-toast-dismiss" id="update-dismiss" aria-label="Ignorer">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <!-- JavaScript Modules (minified and concatenated) -->
+  <script src="js/app.min.js?v=9ebcace"></script>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('SW registered:', registration.scope);
+
+            // Listen for updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New version available
+                  window.dispatchEvent(new CustomEvent('swUpdated', { detail: registration }));
+                }
+              });
+            });
+          })
+          .catch((error) => {
+            console.log('SW registration failed:', error);
+          });
+
+        // Listen for messages from SW
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          if (event.data && event.data.type === 'SW_UPDATED') {
+            window.dispatchEvent(new CustomEvent('swUpdated', { detail: { version: event.data.version } }));
+          }
+        });
+      });
+    }
+  </script>
+</body>
+
+</html>

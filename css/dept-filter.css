@@ -1,0 +1,140 @@
+/* Department Filter (Consistent with Bubbles) */
+.dept-filter {
+    margin-bottom: var(--spacing-md);
+}
+
+.dept-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+    min-height: 0;
+    /* don't collapse if empty, but margin handles spacing */
+}
+
+/* Chip style matching .bubble-group label:checked */
+.dept-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 6px 12px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 50px;
+    font-size: var(--font-size-sm);
+    box-shadow: var(--shadow-sm);
+    animation: fadeIn 0.2s ease;
+}
+
+.dept-chip-remove {
+    background: none;
+    border: none;
+    color: white;
+    padding: 0;
+    margin-left: 2px;
+    cursor: pointer;
+    font-size: 1.1em;
+    line-height: 1;
+    opacity: 0.8;
+    transition: opacity var(--transition-fast);
+}
+
+.dept-chip-remove:hover {
+    opacity: 1;
+}
+
+.dept-input-wrapper {
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 16px;
+    /* Match bubble height roughly */
+    border: 1px solid var(--color-border);
+    border-radius: 50px;
+    font-size: var(--font-size-sm);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    background: var(--color-surface);
+    color: var(--color-text);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+.dept-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    animation: slideDown 0.15s ease;
+}
+
+.dept-dropdown[hidden] {
+    display: none;
+}
+
+.dept-option {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dept-option:hover,
+.dept-option.highlighted {
+    background-color: var(--color-surface-alt);
+    color: var(--color-primary);
+}
+
+.dept-option-code {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    background: var(--color-background);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.dept-no-results {
+    padding: var(--spacing-md);
+    color: var(--color-text-muted);
+    text-align: center;
+    font-size: var(--font-size-sm);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

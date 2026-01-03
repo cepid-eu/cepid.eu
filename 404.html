@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirection - cepid.eu</title>
+  <script>
+    // GitHub Pages SPA redirect
+    // Preserves the path and query string for client-side routing
+    (function() {
+      var defined = ['salaires', 'carte', 'secteurs', 'dossier'];
+      var path = window.location.pathname;
+      var search = window.location.search;
+      var hash = window.location.hash;
+
+      // Detect GitHub Pages project subpath
+      var segments = path.split('/').filter(Boolean);
+      var basePath = '';
+      var routePath = path;
+
+      if (window.location.hostname.endsWith('.github.io') && segments.length > 0) {
+        // Check if first segment is repo name (not a known route)
+        if (defined.indexOf(segments[0]) === -1) {
+          basePath = '/' + segments[0];
+          routePath = '/' + segments.slice(1).join('/') || '/';
+        }
+      }
+
+      // Build redirect URL
+      var redirectURL = basePath + '/index.html?__route=' + encodeURIComponent(routePath);
+
+      // Preserve original query params
+      if (search) {
+        redirectURL += '&' + search.substring(1);
+      }
+
+      // Preserve hash
+      if (hash) {
+        redirectURL += hash;
+      }
+
+      window.location.replace(redirectURL);
+    })();
+  </script>
+  <noscript>
+    <meta http-equiv="refresh" content="0;url=/index.html">
+  </noscript>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f5f5f5;
+      color: #333;
+    }
+    p {
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <p>Redirection en cours...</p>
+</body>
+</html>

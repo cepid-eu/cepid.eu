@@ -1,0 +1,61 @@
+{
+  "name": "CEPID Infoviz - Métiers de la Documentation",
+  "short_name": "CEPID Infoviz",
+  "description": "Visualisation interactive du marché de l'emploi des métiers de la documentation en France (2025)",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "lang": "fr-FR",
+  "scope": "/",
+  "categories": ["business", "education", "productivity"],
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Vue tableau de bord sur desktop"
+    },
+    {
+      "src": "assets/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Vue tableau de bord sur mobile"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Tableau de bord",
+      "short_name": "Dashboard",
+      "description": "Voir les statistiques générales",
+      "url": "/#dashboard",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Carte de France",
+      "short_name": "Carte",
+      "description": "Voir la carte des départements",
+      "url": "/#carte",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
